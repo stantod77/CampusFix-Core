@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-The **Smart Facility Maintenance Management System (SFMMS)** is an automated IT solution designed to optimize the prioritization of campus infrastructure repairs. Unlike standard first-come-first-served ticketing systems, SFMMS utilizes a **C++ Logic Engine** to calculate "Urgency Scores" in real-time, ensuring critical assets (Server Rooms, Labs) are serviced before low-priority areas.
+The **Smart Campus Facility Maintenance Management System (SFMMS)** is an automated IT solution designed to optimize the prioritization of campus infrastructure repairs. Unlike standard first-come-first-served ticketing systems, SFMMS utilizes a **C++ Logic Engine** to calculate "Urgency Scores" in real-time, ensuring critical assets (Server Rooms, Labs) are serviced before low-priority areas.
 
 ---
 
