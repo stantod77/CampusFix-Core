@@ -1,4 +1,4 @@
-# 🏢 Smart Facility Maintenance Management System
+# 🏢 Smart Campus Facility Maintenance Management System
 
 ![Status](https://img.shields.io/badge/Status-Development-orange)
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
