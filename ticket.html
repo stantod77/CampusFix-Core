@@ -62,7 +62,7 @@
     <div class="form-container">
         <h4 class="text-center mb-4">Submit a Maintenance Request</h4>
 
-        <form id="ticketForm">
+        HTML<form id="ticketForm" method="POST" action="insert_ticket.php">
 
             <!-- Full Name -->
             <div class="mb-3">
@@ -172,7 +172,6 @@
     description.addEventListener("input", validateForm);
 
     document.getElementById("ticketForm").addEventListener("submit", function(e) {
-        e.preventDefault();
         alert("Thank you! Your CampusFix request has been submitted.");
         this.reset();
         submitBtn.disabled = true;
