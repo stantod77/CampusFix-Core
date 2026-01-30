@@ -3,6 +3,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * CampusFix Database Watchdog Service
@@ -12,9 +15,9 @@ import java.util.Map;
 class CampusFixWatchdog {
 
     // Database connection parameters
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/campusfix_db";
-    private static final String DB_USER = "root"; // Change as needed
-    private static final String DB_PASSWORD = ""; // Change as needed
+    private static String DB_URL = "jdbc:mysql://localhost:3306/campusfix_db";
+    private static String DB_USER = "admin";
+    private static String DB_PASSWORD = "Campus2026";
 
     // Monitoring parameters
     private static final int POLL_INTERVAL_SECONDS = 30;
@@ -63,7 +66,7 @@ class CampusFixWatchdog {
     }
     /**
      * Load database configuration from config.properties
-     *
+     */
     private static boolean loadConfiguration() {
         Properties props = new Properties();
         try (FileInputStream fis = new FileInputStream("config.properties")) {
@@ -72,8 +75,8 @@ class CampusFixWatchdog {
             String host = props.getProperty("db.host", "localhost");
             String port = props.getProperty("db.port", "3306");
             String dbname = props.getProperty("db.name", "campusfix_db");
-            DB_USER = props.getProperty("db.user");
-            DB_PASSWORD = props.getProperty("db.password");
+            DB_USER = props.getProperty("admin");
+            DB_PASSWORD = props.getProperty("Campus2026");
 
             DB_URL = "jdbc:mysql://" + host + ":" + port + "/" + dbname;
 
@@ -88,7 +91,6 @@ class CampusFixWatchdog {
             return false;
         }
     }
-    */
 
     /**
      * Test database connectivity
