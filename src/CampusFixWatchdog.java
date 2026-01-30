@@ -12,7 +12,7 @@ import java.util.Properties;
  * Monitors the campusfix_db for critical events and alerts administrators
  *
  */
-class CampusFixWatchdog {
+public class CampusFixWatchdog {
 
     // Database connection parameters
     private static String DB_URL = "jdbc:mysql://localhost:3306/campusfix_db";
@@ -37,6 +37,13 @@ class CampusFixWatchdog {
         System.out.println("Monitoring interval: " + POLL_INTERVAL_SECONDS + " seconds");
         System.out.println("Critical priority threshold: " + CRITICAL_PRIORITY_THRESHOLD);
         System.out.println("-------------------------------------------\n");
+
+        //Load Database Config
+        if (!loadConfiguration()) {
+            Syster.err.println("[ERROR] Failed to load configuration. Exiting.");
+            System.err.println("Please create config.properties with database credentials.");
+            return;
+        }
 
         // Test database connection
         if (!testDatabaseConnection()) {
@@ -75,8 +82,8 @@ class CampusFixWatchdog {
             String host = props.getProperty("db.host", "localhost");
             String port = props.getProperty("db.port", "3306");
             String dbname = props.getProperty("db.name", "campusfix_db");
-            DB_USER = props.getProperty("admin");
-            DB_PASSWORD = props.getProperty("Campus2026");
+            DB_USER = props.getProperty("db.user");
+            DB_PASSWORD = props.getProperty("db.password");
 
             DB_URL = "jdbc:mysql://" + host + ":" + port + "/" + dbname;
 
