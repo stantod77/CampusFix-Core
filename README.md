@@ -31,7 +31,7 @@ The system operates on four integrated layers:
 * **Stanimir (Stan):** Project Manager & System Architect
 * **Mohamad:** Backend Engineer (C++ Logic)
 * **Philip:** Frontend Developer (Web Interface)
-* **Kalob:** Microservice Developer (Java Notifications)
+* **Kaleb:** Microservice Developer (Java Notifications)
 
 ---
 
