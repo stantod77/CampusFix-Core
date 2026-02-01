@@ -19,3 +19,9 @@
 * **Algorithm Refinement:** Enhance the C++ keyword detection (e.g., "Smoke", "Leak", "Spark") to assign accurate priority scores (1-10).
 * **CLI Integration:** Compile the C++ engine into an executable (.exe) that can accept command-line arguments from the PHP server.
 * **Unit Testing:** Verify the sorting algorithm works correctly with batch data files.
+
+## 4. Kaleb Yang (Backend Java Engineer)
+**Primary Responsibility:** Java Notification Microservice ("The Watchdog").
+* **Database Connection:** Implement JDBC connectivity to the MySQL `campusfix_db` to read ticket data independent of the PHP web server.
+* **The "Watchdog" Loop:** Create a background service (while-loop) that polls the database every 30 seconds to detect new entries.
+* **Alert Logic:** Program the triggers to identify "Critical" events (Priority Score > 80) and simulate an immediate alert output for security staff.
