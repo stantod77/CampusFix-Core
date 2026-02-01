@@ -1,59 +1,88 @@
-# 🏢 Smart Facility Maintenance Management System (SFMMS)
+# 🏢 CampusFix: Smart Facility Maintenance Management System (SFMMS)
 
 ![Status](https://img.shields.io/badge/Status-Development-orange)
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-**Project Overview**
-The **Smart Facility Maintenance Management System (SFMMS)** is an automated IT solution designed to optimize the prioritization of campus infrastructure repairs. Unlike standard ticketing systems, it utilizes a **Polyglot Microservices Architecture** to decouple the user interface, logic processing, and system alerting into separate, specialized components.
+## 📖 Project Overview
+**CampusFix** is an automated IT solution designed to optimize the prioritization of campus infrastructure repairs. Unlike standard ticketing systems, it utilizes a **Polyglot Microservices Architecture** to decouple the user interface, logic processing, and system alerting into separate, specialized components.
+
+
 
 ---
 
 ## 🏗️ System Architecture
-The system operates on four integrated layers:
-1.  **Frontend (Web):** HTML/Bootstrap interface for ticket submission and administration.
-2.  **Middleware (Integration):** Python scripts handling API routing and data sanitization.
-3.  **Core Engine (C++):** A high-performance background service that executes the **Weighted Priority Algorithm** (Severity × Criticality) to rank maintenance tasks.
-4.  **Notification Microservice (Java):** A standalone "Observer" service that continuously monitors the database for high-priority anomalies (e.g., Fire, Flooding) and triggers real-time system alerts.
+The system operates on three integrated layers:
+1.  **Frontend & Middleware (Web):** HTML5/Bootstrap interface powered by **PHP 8.2** for secure login, ticket submission, and database connectivity.
+2.  **Core Engine (C++):** A high-performance background service that executes the **Weighted Priority Algorithm** (Severity × Criticality) to automatically rank maintenance tasks.
+3.  **"Watchdog" Microservice (Java):** A standalone background service that continuously monitors the database for critical anomalies (e.g., Gas Leaks, Fire) and triggers real-time system alerts via the console.
 
 ---
 
 ## 🛠️ Tech Stack
+* **Web Server:** Apache (XAMPP)
 * **Database:** MySQL 8.0
-* **Core Logic:** C++ (std::17)
-* **Alerting Service:** Java (JDK 17, JDBC)
-* **Integration:** Python 3.10
-* **Frontend:** HTML5, CSS3, JavaScript
+* **Backend Logic:** PHP 8.2
+* **Priority Engine:** C++ (std::17)
+* **Notification Service:** Java 21 (JDBC)
+* **Frontend:** HTML5, CSS3, Bootstrap 5
 
 ---
 
 ## 👥 The Team
-* **Stanimir (Stan):** Project Manager & System Architect
-* **Mohamad:** Backend Engineer (C++ Logic)
-* **Philip:** Frontend Developer (Web Interface)
-* **Kaleb:** Microservice Developer (Java Notifications)
+* **Stanimir (Stan):** Project Lead & System Architect
+* **Mohamad:** Backend Engineer (C++ Priority Logic)
+* **Philip:** Frontend Lead (Web Interface & UI)
+* **Kaleb:** Java Engineer (Watchdog Notification Service)
 
 ---
 
 ## 🚀 Getting Started (For Developers)
 
 ### 1. Prerequisites
-* VS Code (Recommended)
-* MySQL Server running locally
-* GCC Compiler (MinGW or Linux)
-* Java JDK 17 or higher
-* MySQL Connector/J (JDBC Driver)
-* Python 3.x
+* **XAMPP** (Apache & MySQL)
+* **VS Code** (Recommended)
+* **GCC Compiler** (MinGW or Linux)
+* **Java JDK 17** or higher
+* **MySQL Connector/J** (JDBC Driver)
 
 ### 2. Database Setup
 Before running any code, you must initialize the database:
-1.  Open your MySQL Workbench or Terminal.
-2.  Run the script located at: `database/schema_v1.sql`
-3.  Verify that the `campusfix_db` database was created.
+1.  Open **phpMyAdmin** or MySQL Workbench.
+2.  Import the script located at: `database/seed_data.sql`
+3.  Verify that the `campusfix_db` database is created and populated with test users.
 
-### 3. Build the Logic Engine (Mohamad)
+### 3. Run the Web Application (Stan & Philip)
+1.  Clone this repo into your XAMPP `htdocs` folder:
+    ```bash
+    C:\xampp\htdocs\CampusFix-Core
+    ```
+2.  Start **Apache** and **MySQL** in the XAMPP Control Panel.
+3.  Open your browser and navigate to: `http://localhost/CampusFix-Core/`
+
+### 4. Run the Watchdog Service (Kaleb)
+The Java service monitors the database independently of the web server.
+1.  Navigate to the source folder:
+    ```bash
+    cd src
+    ```
+2.  Create a `config.properties` file in the `src/` folder with your DB credentials:
+    ```properties
+    db.host=localhost
+    db.port=3306
+    db.name=campusfix_db
+    db.user=root
+    db.password=
+    ```
+3.  Compile and run the Watchdog:
+    ```bash
+    javac CampusFixWatchdog.java
+    java -cp ".;mysql-connector-j-8.0.33.jar" CampusFixWatchdog
+    ```
+
+### 5. Build the Logic Engine (Mohamad)
 Compile and run the C++ priority engine:
 ```bash
-cd backend
+cd backend-cpp
 g++ -o engine main.cpp
 ./engine
