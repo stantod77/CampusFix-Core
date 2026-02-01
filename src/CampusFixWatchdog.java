@@ -7,244 +7,96 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-/**
- * CampusFix Database Watchdog Service
- * Monitors the campusfix_db for critical events and alerts administrators
- *
- */
 public class CampusFixWatchdog {
 
-    // Database connection parameters
+    // Default connection settings (Works for your XAMPP)
     private static String DB_URL = "jdbc:mysql://localhost:3306/campusfix_db";
-    private static String DB_USER = "admin";
-    private static String DB_PASSWORD = "Campus2026";
+    private static String DB_USER = "root";
+    private static String DB_PASSWORD = ""; // Default XAMPP is empty
 
-    // Monitoring parameters
     private static final int POLL_INTERVAL_SECONDS = 30;
     private static final int CRITICAL_PRIORITY_THRESHOLD = 80;
-
-    // Track ticket statuses to detect changes
     private static Map<Integer, String> ticketStatusCache = new HashMap<>();
-
-    // Date formatter for console output
-    private static final DateTimeFormatter TIME_FORMAT =
-            DateTimeFormatter.ofPattern("hh:mm a");
+    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("hh:mm a");
 
     public static void main(String[] args) {
-        System.out.println("===========================================");
-        System.out.println("  CampusFix Watchdog Service  ");
-        System.out.println("===========================================");
-        System.out.println("Monitoring interval: " + POLL_INTERVAL_SECONDS + " seconds");
-        System.out.println("Critical priority threshold: " + CRITICAL_PRIORITY_THRESHOLD);
-        System.out.println("-------------------------------------------\n");
+        System.out.println("=== CampusFix Watchdog Service ===");
+        System.out.println("Monitoring Priority > " + CRITICAL_PRIORITY_THRESHOLD);
 
-        //Load Database Config
-        if (!loadConfiguration()) {
-            Syster.err.println("[ERROR] Failed to load configuration. Exiting.");
-            System.err.println("Please create config.properties with database credentials.");
-            return;
-        }
+        // Load Config if available, otherwise use defaults
+        loadConfiguration();
 
-        // Test database connection
         if (!testDatabaseConnection()) {
-            System.err.println("[ERROR] Failed to connect to database. Exiting.");
+            System.err.println("[ERROR] Could not connect to database. Check XAMPP.");
             return;
         }
 
-        System.out.println("[INFO " + getCurrentTime() + "]: Database connection successful.");
-        System.out.println("[INFO " + getCurrentTime() + "]: Watchdog service is now monitoring...\n");
-
-        // Initialize status cache
+        System.out.println("[INFO " + getCurrentTime() + "]: Connected. Monitoring...");
         initializeStatusCache();
 
-        // Main watchdog loop
         while (true) {
             try {
                 monitorDatabase();
                 Thread.sleep(POLL_INTERVAL_SECONDS * 1000);
-            } catch (InterruptedException e) {
-                System.err.println("[ERROR " + getCurrentTime() + "]: Watchdog interrupted. Shutting down.");
-                break;
             } catch (Exception e) {
-                System.err.println("[ERROR " + getCurrentTime() + "]: Unexpected error - " + e.getMessage());
-                e.printStackTrace();
+                System.err.println("[ERROR]: " + e.getMessage());
             }
         }
     }
-    /**
-     * Load database configuration from config.properties
-     */
+
     private static boolean loadConfiguration() {
         Properties props = new Properties();
+        // Look for config in the same folder
         try (FileInputStream fis = new FileInputStream("config.properties")) {
             props.load(fis);
-
-            String host = props.getProperty("db.host", "localhost");
-            String port = props.getProperty("db.port", "3306");
-            String dbname = props.getProperty("db.name", "campusfix_db");
-            DB_USER = props.getProperty("db.user");
-            DB_PASSWORD = props.getProperty("db.password");
-
-            DB_URL = "jdbc:mysql://" + host + ":" + port + "/" + dbname;
-
-            if (DB_USER == null || DB_PASSWORD == null) {
-                System.err.println("[ERROR] Database credentials not found in config.properties");
-                return false;
-            }
-
+            DB_USER = props.getProperty("db.user", "root");
+            DB_PASSWORD = props.getProperty("db.password", "");
             return true;
         } catch (IOException e) {
-            System.err.println("[ERROR] Could not load config.properties: " + e.getMessage());
+            System.out.println("[WARN] No config.properties found. Using default XAMPP settings.");
             return false;
         }
     }
 
-    /**
-     * Test database connectivity
-     */
     private static boolean testDatabaseConnection() {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             return conn != null && !conn.isClosed();
         } catch (SQLException e) {
-            System.err.println("[ERROR] Database connection failed: " + e.getMessage());
-            System.err.println("Please verify:");
-            System.err.println("  1. MySQL server is running");
-            System.err.println("  2. Database 'campusfix_db' exists");
-            System.err.println("  3. Credentials are correct");
-            System.err.println("  4. MySQL Connector/J JAR is in classpath");
+            System.err.println("[ERROR] DB Connection Failed: " + e.getMessage());
             return false;
         }
     }
 
-    /**
-     * Initialize the status cache with current ticket statuses
-     */
     private static void initializeStatusCache() {
-        String query = "SELECT Ticket_ID, Status FROM tickets";
-
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
+             ResultSet rs = stmt.executeQuery("SELECT Ticket_ID, Status FROM tickets")) {
             while (rs.next()) {
-                int ticketId = rs.getInt("Ticket_ID");
-                String status = rs.getString("Status");
-                ticketStatusCache.put(ticketId, status);
+                ticketStatusCache.put(rs.getInt("Ticket_ID"), rs.getString("Status"));
             }
-
-            System.out.println("[INFO " + getCurrentTime() + "]: Initialized tracking for " +
-                    ticketStatusCache.size() + " tickets.\n");
-
         } catch (SQLException e) {
-            System.err.println("[ERROR " + getCurrentTime() + "]: Failed to initialize status cache - " +
-                    e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    /**
-     * Main monitoring logic - checks for critical events
-     */
     private static void monitorDatabase() {
-        checkCriticalPriorityTickets();
-        checkResolvedTickets();
-    }
-
-    /**
-     * Check for tickets with Priority_Score > 80
-     */
-    private static void checkCriticalPriorityTickets() {
-        String query = "SELECT Ticket_ID, Issue_Description, Location, Priority_Score, Status " +
-                "FROM tickets " +
-                "WHERE Priority_Score > ? AND Status != 'Resolved'";
-
+        // Check for Critical Tickets
+        String query = "SELECT * FROM tickets WHERE Priority_Score > ? AND Status != 'Resolved'";
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(query)) {
-
             pstmt.setInt(1, CRITICAL_PRIORITY_THRESHOLD);
-
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    int ticketId = rs.getInt("Ticket_ID");
-                    String description = rs.getString("Issue_Description");
-                    String location = rs.getString("Location");
-                    int priorityScore = rs.getInt("Priority_Score");
-                    String status = rs.getString("Status");
-
-                    // Alert for critical priority
-                    System.out.println(String.format(
-                            "[ALERT %s]: High Priority Issue Detected! (ID: %d, Location: %s)",
-                            getCurrentTime(), ticketId, location
-                    ));
-                    System.out.println(String.format(
-                            "              Priority Score: %d | Status: %s",
-                            priorityScore, status
-                    ));
-                    System.out.println(String.format(
-                            "              Description: %s\n",
-                            truncate(description, 60)
-                    ));
+                    System.out.println("[ALERT " + getCurrentTime() + "]: CRITICAL ISSUE! ID: " + 
+                        rs.getInt("Ticket_ID") + " - " + rs.getString("Issue_Description"));
                 }
             }
-
         } catch (SQLException e) {
-            System.err.println("[ERROR " + getCurrentTime() + "]: Failed to check critical tickets - " +
-                    e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 
-    /**
-     * Check for tickets that changed status to "Resolved"
-     */
-    private static void checkResolvedTickets() {
-        String query = "SELECT Ticket_ID, Status, Assigned_To FROM tickets";
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            while (rs.next()) {
-                int ticketId = rs.getInt("Ticket_ID");
-                String currentStatus = rs.getString("Status");
-                String assignedTo = rs.getString("Assigned_To");
-
-                // Check if status changed to "Resolved"
-                String previousStatus = ticketStatusCache.get(ticketId);
-
-                if (previousStatus != null && !previousStatus.equals("Resolved") &&
-                        currentStatus.equals("Resolved")) {
-
-                    // Alert for newly resolved ticket
-                    String technician = (assignedTo != null && !assignedTo.isEmpty())
-                            ? assignedTo : "Unknown Technician";
-
-                    System.out.println(String.format(
-                            "[INFO %s]: Ticket #%d marked as Resolved by %s\n",
-                            getCurrentTime(), ticketId, technician
-                    ));
-                }
-
-                // Update cache with current status
-                ticketStatusCache.put(ticketId, currentStatus);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("[ERROR " + getCurrentTime() + "]: Failed to check resolved tickets - " +
-                    e.getMessage());
-        }
-    }
-    /**
-     * Get current time
-     */
     private static String getCurrentTime() {
         return LocalDateTime.now().format(TIME_FORMAT);
-    }
-
-    /**
-     * Truncate string
-     */
-    private static String truncate(String str, int maxLength) {
-        if (str == null) return "";
-        if (str.length() <= maxLength) return str;
-        return str.substring(0, maxLength - 3) + "...";
     }
 }
