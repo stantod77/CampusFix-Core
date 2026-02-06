@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CampusFix | Maintenance Request</title>
+    <title>CampusFix | Welcome</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
@@ -11,32 +11,43 @@
       rel="stylesheet">
 
     <style>
+        :root {
+            --campusfix-blue: #05294D;
+        }
+
         body {
             background-color: #f4f6f9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .navbar-brand {
             font-weight: bold;
             font-size: 1.4rem;
-            letter-spacing: 0.5px;
         }
 
         .brand-highlight {
-            color: #0d6efd;
+            color: var(--campusfix-blue);
         }
 
-        .form-container {
-            max-width: 600px;
+        .btn-primary {
+            background-color: var(--campusfix-blue);
+            border-color: var(--campusfix-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: #041f3a;
+            border-color: #041f3a;
+        }
+
+        .landing-container {
+            max-width: 500px;
             margin: auto;
-            margin-top: 40px;
-            padding: 25px;
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
         }
 
         footer {
-            margin-top: 40px;
             font-size: 0.9rem;
             color: #6c757d;
         }
@@ -46,137 +57,38 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+<nav class="navbar navbar-light bg-white shadow-sm">
     <div class="container">
         <a class="navbar-brand" href="#">
             <span class="brand-highlight">Campus</span>Fix
         </a>
-        <span class="navbar-text">
-            Smart Campus Maintenance
-        </span>
     </div>
 </nav>
 
-<!-- Main Content -->
-<div class="container">
-    <div class="form-container">
-        <h4 class="text-center mb-4">Submit a Maintenance Request</h4>
+<!-- Landing Content -->
+<div class="container d-flex align-items-center flex-grow-1">
+    <div class="landing-container w-100">
 
-        <form id="ticketForm" method="POST" action="insert_ticket.php">
+        <h2 class="mb-4">Welcome to CampusFix</h2>
+        <p class="mb-4">Smart Campus Facility Maintenance System</p>
 
-            <!-- Full Name -->
-            <div class="mb-3">
-                <label class="form-label">Full Name</label>
-                <input type="text" name="full_name"class="form-control" placeholder="Enter your full name">
-            </div>
+        <div class="d-grid gap-3">
+            <a href="ticket.html" class="btn btn-primary btn-lg">
+                Report Issue
+            </a>
 
-            <!-- Email -->
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" placeholder="name@campusfix.com">
-            </div>
+            <a href="login.html" class="btn btn-outline-secondary btn-lg">
+                Staff Login
+            </a>
+        </div>
 
-            <!-- Building -->
-            <div class="mb-3">
-                <label class="form-label">Building *</label>
-                <select name="building" class="form-select" id="building" required>
-                    <option value="">Select a building</option>
-                    <option>Science Lab</option>
-                    <option>Library</option>
-                    <option>Administration Building</option>
-                    <option>Engineering Building</option>
-                    <option>Student Center</option>
-                    <option>Building 1</option>
-                    <option>Building 2</option>
-                    <option>Building 3</option>
-                    <option>Building 4</option>
-                    <option>Building 5</option>
-                    <option>Building 6</option>
-                    <option>Building 7</option>
-                </select>
-            </div>
-
-            <!-- Room Number -->
-            <div class="mb-3">
-                <label class="form-label">Room Number</label>
-                <input type="text" name="room" class="form-control" placeholder="e.g., 204B">
-            </div>
-
-            <!-- Category -->
-            <div class="mb-3">
-                <label class="form-label">Category</label>
-                <select name="category" class="form-select">
-                    <option>HVAC</option>
-                    <option>Plumbing</option>
-                    <option>Electrical</option>
-                    <option>IT</option>
-                </select>
-            </div>
-
-            <!-- Severity -->
-            <div class="mb-3">
-                <label class="form-label">Severity (1 = Minor, 10 = Emergency)</label>
-                <select name="severity" class="form-select">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
-            </div>
-
-            <!-- Description -->
-            <div class="mb-3">
-                <label class="form-label">Description *</label>
-                <textarea 
-                    name="description" class="form-control" 
-                    id="description" 
-                    rows="4"
-                    placeholder="Describe the maintenance issue..."
-                    required></textarea>
-            </div>
-
-            <!-- Submit -->
-            <button 
-                type="submit" 
-                id="submitBtn" 
-                class="btn btn-primary w-100"
-                disabled>
-                Submit Request
-            </button>
-        </form>
     </div>
-
-    <!-- Footer -->
-    <footer class="text-center">
-        © 2026 CampusFix · www.campusfix.com
-    </footer>
 </div>
 
-<!-- JavaScript Validation -->
-<script>
-    const building = document.getElementById("building");
-    const description = document.getElementById("description");
-    const submitBtn = document.getElementById("submitBtn");
-
-    function validateForm() {
-        submitBtn.disabled = !(building.value && description.value.trim());
-    }
-
-    building.addEventListener("change", validateForm);
-    description.addEventListener("input", validateForm);
-
-    document.getElementById("ticketForm").addEventListener("submit", function(e) {
-       // e.preventDefault();
-       // alert("Thank you! Your CampusFix request has been submitted.");
-       
-    });
-</script>
+<!-- Footer -->
+<footer class="text-center mb-3">
+    © 2026 CampusFix · www.campusfix.com
+</footer>
 
 </body>
 </html>
