@@ -16,6 +16,10 @@
       rel="stylesheet">
 
     <style>
+        :root {
+            --campusfix-blue: #05294D;
+        }
+
         body {
             background-color: #f4f6f9;
         }
@@ -26,7 +30,18 @@
         }
 
         .brand-highlight {
-            color: #0d6efd;
+            color: var(--campusfix-blue);
+        }
+
+        /* Override Bootstrap primary button */
+        .btn-primary {
+            background-color: var(--campusfix-blue);
+            border-color: var(--campusfix-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: #041f3a;
+            border-color: #041f3a;
         }
 
         .success-container {
@@ -42,7 +57,7 @@
 
         .success-icon {
             font-size: 64px;
-            color: #198754;
+            color: #198754; /* keep green success icon */
         }
     </style>
 </head>
@@ -90,12 +105,10 @@
 
 <!-- JavaScript Stretch Goal -->
 <script>
-    // Generate fake ticket ID (demo only)
     function generateTicketID() {
         return "CF-" + Math.floor(10000 + Math.random() * 90000);
     }
 
-    // Read URL parameters
     const params = new URLSearchParams(window.location.search);
     const status = params.get("status");
 
@@ -106,3 +119,5 @@
 
 </body>
 </html>
+
+
