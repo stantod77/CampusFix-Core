@@ -11,6 +11,10 @@
       rel="stylesheet">
 
     <style>
+        :root {
+            --campusfix-blue: #05294D;
+        }
+
         body {
             background-color: #f4f6f9;
             height: 100vh;
@@ -24,16 +28,23 @@
         }
 
         .brand-highlight {
-            color: #0d6efd;
+            color: var(--campusfix-blue);
         }
 
-        .login-container {
-            max-width: 420px;
+        .btn-primary {
+            background-color: var(--campusfix-blue);
+            border-color: var(--campusfix-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: #041f3a;
+            border-color: #041f3a;
+        }
+
+        .landing-container {
+            max-width: 500px;
             margin: auto;
-            padding: 30px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
         }
 
         footer {
