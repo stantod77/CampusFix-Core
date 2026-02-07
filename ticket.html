@@ -11,6 +11,10 @@
       rel="stylesheet">
 
     <style>
+        :root {
+            --campusfix-blue: #05294D;
+        }
+
         body {
             background-color: #f4f6f9;
         }
@@ -22,7 +26,18 @@
         }
 
         .brand-highlight {
-            color: #0d6efd;
+            color: var(--campusfix-blue);
+        }
+
+        /* Override Bootstrap primary button */
+        .btn-primary {
+            background-color: var(--campusfix-blue);
+            border-color: var(--campusfix-blue);
+        }
+
+        .btn-primary:hover {
+            background-color: #041f3a;
+            border-color: #041f3a;
         }
 
         .form-container {
@@ -172,6 +187,7 @@
     description.addEventListener("input", validateForm);
 
     document.getElementById("ticketForm").addEventListener("submit", function(e) {
+        e.preventDefault(); // prevent real form submit
         window.location.href = "success.html?status=success";
     });
 </script>
