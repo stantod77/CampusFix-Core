@@ -1,8 +1,8 @@
 <?php
 // 1. Database Credentials
 $servername = "localhost";
-$username = "admin";        // The new user we just made
-$password = "Campus2026";   // The specific password we just set
+$username = "root";        // The new user we just made
+$password = "dbpass2026";   // The specific password we just set
 $dbname = "campusfix_db";
 
 // 2. Create Connection
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
    if ($conn->query($sql) === TRUE) {
         // Redirect back to the main page with a success signal
-        header("Location: index.html?status=success");
+        header("Location: success.html");
         exit(); // Always exit after a header redirect!
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
