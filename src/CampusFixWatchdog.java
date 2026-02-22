@@ -9,10 +9,9 @@ import java.util.Properties;
 
 public class CampusFixWatchdog {
 
-    // Default connection settings (Works for your XAMPP)
     private static String DB_URL = "jdbc:mysql://localhost:3306/campusfix_db";
-    private static String DB_USER = "root";
-    private static String DB_PASSWORD = ""; // Default XAMPP is empty
+    private static String DB_USER = "campus_user"; // Updated for Pi
+    private static String DB_PASSWORD = "db2026";   // Updated for Pi
 
     private static final int POLL_INTERVAL_SECONDS = 30;
     private static final int CRITICAL_PRIORITY_THRESHOLD = 80;
@@ -23,11 +22,19 @@ public class CampusFixWatchdog {
         System.out.println("=== CampusFix Watchdog Service ===");
         System.out.println("Monitoring Priority > " + CRITICAL_PRIORITY_THRESHOLD);
 
-        // Load Config if available, otherwise use defaults
+        // Load Config if available
         loadConfiguration();
 
+        // FORCE LOAD THE DRIVER (Crucial for Pi)
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            System.err.println("[ERROR] MySQL Driver not found! Ensure the .jar is in the folder.");
+            return;
+        }
+
         if (!testDatabaseConnection()) {
-            System.err.println("[ERROR] Could not connect to database. Check XAMPP.");
+            System.err.println("[ERROR] Could not connect to database. Check credentials.");
             return;
         }
 
@@ -46,14 +53,13 @@ public class CampusFixWatchdog {
 
     private static boolean loadConfiguration() {
         Properties props = new Properties();
-        // Look for config in the same folder
         try (FileInputStream fis = new FileInputStream("config.properties")) {
             props.load(fis);
-            DB_USER = props.getProperty("db.user", "root");
-            DB_PASSWORD = props.getProperty("db.password", "");
+            DB_USER = props.getProperty("db.user", "campus_user");
+            DB_PASSWORD = props.getProperty("db.password", "db2026");
             return true;
         } catch (IOException e) {
-            System.out.println("[WARN] No config.properties found. Using default XAMPP settings.");
+            System.out.println("[WARN] No config.properties found. Using internal credentials.");
             return false;
         }
     }
@@ -68,11 +74,12 @@ public class CampusFixWatchdog {
     }
 
     private static void initializeStatusCache() {
+        // Updated column names: ticket_id, status
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT Ticket_ID, Status FROM tickets")) {
+             ResultSet rs = stmt.executeQuery("SELECT ticket_id, status FROM tickets")) {
             while (rs.next()) {
-                ticketStatusCache.put(rs.getInt("Ticket_ID"), rs.getString("Status"));
+                ticketStatusCache.put(rs.getInt("ticket_id"), rs.getString("status"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -80,19 +87,19 @@ public class CampusFixWatchdog {
     }
 
     private static void monitorDatabase() {
-        // Check for Critical Tickets
-        String query = "SELECT * FROM tickets WHERE Priority_Score > ? AND Status != 'Resolved'";
+        // Updated column names: ticket_id, description
+        String query = "SELECT ticket_id, description FROM tickets WHERE priority_score > ? AND status != 'Resolved'";
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setInt(1, CRITICAL_PRIORITY_THRESHOLD);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    System.out.println("[ALERT " + getCurrentTime() + "]: CRITICAL ISSUE! ID: " + 
-                        rs.getInt("Ticket_ID") + " - " + rs.getString("Issue_Description"));
+                    System.out.println("[ALERT " + getCurrentTime() + "]: CRITICAL ISSUE! ID: " +
+                        rs.getInt("ticket_id") + " - " + rs.getString("description"));
                 }
             }
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            System.err.println("[QUERY ERROR]: " + e.getMessage());
         }
     }
 

@@ -86,3 +86,21 @@ Compile and run the C++ priority engine:
 cd backend-cpp
 g++ -o engine main.cpp
 ./engine
+## 🍓 Production Edge Deployment (Raspberry Pi 5)
+For the final capstone demonstration, the system has been migrated from XAMPP to a dedicated Linux Edge Server.
+
+### 1. Edge Environment Specs
+* **Hardware:** Raspberry Pi 5 (8GB)
+* **OS:** Debian (Raspberry Pi OS)
+* **Access:** `http://campusfix.local` (Local DNS via mDNS)
+
+### 2. Security Hardenings
+* **Database Access:** Switched from `root` to a restricted `campus_user` for all PHP transactions.
+* **Environment Config:** Database credentials are managed via `db_connect.php` at the server root.
+* **Permissions:** Web directory ownership assigned to `www-data` to prevent unauthorized file execution.
+
+### 3. Deployment Command
+To sync latest changes to the edge server:
+```bash
+git pull origin main
+sudo chown -R www-data:www-data /var/www/html/
