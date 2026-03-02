@@ -51,3 +51,10 @@ Ticket Submission: http://192.168.1.141/ticket.html
 
 Admin Dashboard: http://192.168.1.141/dashboard.php
 
+## 🚀 Architectural Choice: Colocated Services
+The decision to host the MariaDB database and Apache Web Server on a single Raspberry Pi 5 node was driven by:
+* **Performance:** Utilizing Unix Sockets for sub-millisecond query response.
+* **Security:** Closing Port 3306 to external traffic and enforcing Localhost-only access.
+* **Reliability:** Ensuring the system remains operational as an "Autonomous Edge Unit" during campus network outages.
+EOF
+
