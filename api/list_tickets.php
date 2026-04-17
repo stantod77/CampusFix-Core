@@ -2,15 +2,26 @@
 header('Content-Type: application/json');
 include('../db_config.php');
 
-// Pulling the columns Kaleb needs for his logic
-$sql = "SELECT ticket_id, title, location, severity_level, status, priority_score, created_at FROM tickets ORDER BY created_at DESC";
+// Explicitly selecting 7 columns in order
+$sql = "SELECT 
+            ticket_id,      -- d[0]
+            title,          -- d[1]
+            location,       -- d[2]
+            description,    -- d[3]
+            severity_level, -- d[4]
+            status,         -- d[5]
+            created_at      -- d[6]
+        FROM tickets 
+        ORDER BY created_at DESC";
+
 $result = $conn->query($sql);
 $tickets = [];
 
-while($row = $result->fetch_assoc()) {
-    $tickets[] = $row;
+if ($result) {
+    while($row = $result->fetch_row()) {
+        $tickets[] = $row;
+    }
 }
 
-// Send the whole array to the Java app
 echo json_encode($tickets);
 ?>

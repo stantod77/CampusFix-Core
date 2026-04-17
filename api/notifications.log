@@ -1,16 +1,14 @@
-2026-03-23 19:23:47 | NOTIFIED: Issue #2 (Electrical Issue in Administration Building) at  is FIXED.
-2026-03-23 19:23:56 | NOTIFIED: Issue #6 (Test TEst 2 ) at 67 is FIXED.
-2026-03-25 09:52:07 | NOTIFIED: Issue #5 (Stan Tod ) at 208 is FIXED.
-2026-03-25 10:05:25 | NOTIFIED: Issue #4 (HVAC Issue in Library) at  is FIXED.
-2026-03-25 10:10:31 | NOTIFIED: Issue #9 (Kaleb) at 208 is FIXED.
-2026-03-25 10:10:34 | NOTIFIED: Issue #9 (Kaleb) at 208 is FIXED.
-2026-03-25 10:10:40 | NOTIFIED: Issue #9 (Kaleb) at 208 is FIXED.
-2026-03-25 10:10:43 | NOTIFIED: Issue #9 (Kaleb) at 208 is FIXED.
-2026-03-25 10:11:42 | NOTIFIED: Issue #9 (Kaleb) at 208 is FIXED.
-2026-03-25 10:21:11 | Ticket #9 changed to OPEN
-2026-03-25 10:21:16 | Ticket #9 changed to RESOLVED
-2026-03-25 10:21:19 | Ticket #9 changed to OPEN
-2026-03-25 10:21:24 | Ticket #9 changed to RESOLVED
-2026-03-25 10:21:48 | Ticket #9 changed to OPEN
-2026-03-25 10:51:11 | Ticket #2 changed to OPEN
-2026-03-25 10:51:18 | Ticket #9 changed to RESOLVED
+[2026-03-28 02:22:17] EVENT: Ticket #5 status changed to: OPEN
+[2026-03-28 02:22:22] EVENT: Ticket #7 status changed to: OPEN
+[2026-03-28 02:22:29] EVENT: Ticket #3 status changed to: RESOLVED
+[2026-03-28 02:22:39] EVENT: Ticket #1 status changed to: OPEN
+[2026-03-28 02:22:52] EVENT: Ticket #7 status changed to: RESOLVED
+[2026-03-31 19:27:05] EVENT: Ticket #10 status changed to: RESOLVED
+[2026-03-31 19:29:54] EVENT: Ticket #8 status changed to: OPEN
+[2026-03-31 19:30:03] EVENT: Ticket #9 status changed to: OPEN
+[2026-03-31 19:35:03] EVENT: Ticket #2 status changed to: RESOLVED
+[2026-03-31 19:58:05] EVENT: Ticket #12 status changed to: RESOLVED
+[2026-03-31 19:58:24] EVENT: Ticket #10 status changed to: OPEN
+[2026-03-31 20:05:44] EVENT: Ticket #15 status changed to: RESOLVED
+[2026-03-31 20:07:36] EVENT: Ticket #15 status changed to: OPEN
+[2026-04-16 15:54:29] EVENT: Ticket #20 status changed to: RESOLVED

@@ -2,7 +2,7 @@
 // db_connect.php
 $servername = "localhost";
 $username = "root";
-$password = "dbpass2026";
+$password = "root";
 $dbname = "campusfix_db";
 
 // Create connection

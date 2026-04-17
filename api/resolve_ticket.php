@@ -1,29 +1,31 @@
 <?php
-header('Content-Type: application/json');
-include('../db_config.php');
+include('../auth_check.php');
 
-// Get ID and Status from the URL (e.g., ?id=101&status=open)
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$newStatus = isset($_GET['status']) ? $_GET['status'] : 'resolved';
+$servername = "localhost";
+$username = "www-data";
+$password = "";
+$dbname = "campusfix_db";
 
-// Validation
-if ($id <= 0) {
-    echo json_encode(["success" => false, "error" => "Invalid ID"]);
-    exit;
+$id = $_GET['id'] ?? null;
+$status = $_GET['status'] ?? null;
+
+if ($id && $status) {
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    $stmt = $conn->prepare("UPDATE tickets SET status = ? WHERE ticket_id = ?");
+    $stmt->bind_param("si", $status, $id);
+    
+    if ($stmt->execute()) {
+        // --- NEW: LOGGING LOGIC FOR AUDIT TRAIL ---
+        $log_file = 'notifications.log';
+        $timestamp = date("Y-m-d H:i:s");
+        $log_entry = "[$timestamp] EVENT: Ticket #$id status changed to: " . strtoupper($status) . "\n";
+        file_put_contents($log_file, $log_entry, FILE_APPEND);
+        // ------------------------------------------
+
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false]);
+    }
+    $conn->close();
 }
-
-// 1. Execute the Update
-$sql = "UPDATE tickets SET status = '$newStatus' WHERE ticket_id = $id";
-
-if ($conn->query($sql) === TRUE) {
-    // 2. Log the change for your Testing Report
-    $logEntry = date("Y-m-d H:i:s") . " | Ticket #$id changed to " . strtoupper($newStatus) . "\n";
-    file_put_contents('notifications.log', $logEntry, FILE_APPEND);
-
-    echo json_encode(["success" => true, "status" => $newStatus]);
-} else {
-    echo json_encode(["success" => false, "error" => $conn->error]);
-}
-
-$conn->close();
 ?>

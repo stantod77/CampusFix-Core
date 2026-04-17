@@ -2,122 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CampusFix | Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link 
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
-      rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusFix - Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        :root {
-            --campusfix-blue: #05294D;
-        }
+        :root { --navy: #0b1f3a; }
+        body { background-color: #f8f9fa; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Consistent Header Branding */
+        .navbar { background: white; border-bottom: 3px solid var(--navy); padding: 10px 30px; display: flex; align-items: center; width: 100%; }
+        .brand-group { display: flex; align-items: center; text-decoration: none; }
+        .cf-logo { background: var(--navy); color: white; padding: 5px 12px; border-radius: 6px; font-weight: 800; margin-right: 8px; font-size: 20px; }
+        .brand-name { color: var(--navy); font-weight: 800; font-size: 22px; }
 
-        body {
-            background-color: #f4f6f9;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.4rem;
-        }
-
-        .brand-highlight {
-            color: var(--campusfix-blue);
-        }
-
-        .btn-primary {
-            background-color: var(--campusfix-blue);
-            border-color: var(--campusfix-blue);
-        }
-
-        .btn-primary:hover {
-            background-color: #041f3a;
-            border-color: #041f3a;
-        }
-
-        .landing-container {
-            max-width: 500px;
-            margin: auto;
-            text-align: center;
-        }
-
-        footer {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
+        /* Login Card Styling */
+        .login-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { width: 100%; max-width: 400px; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid var(--navy); }
+        .login-card h2 { color: var(--navy); font-weight: 800; margin-bottom: 25px; text-align: center; }
+        .btn-login { background-color: var(--navy); color: white; font-weight: 700; width: 100%; padding: 12px; border-radius: 6px; border: none; margin-top: 10px; }
+        .btn-login:hover { opacity: 0.9; color: white; }
+        .form-control:focus { border-color: var(--navy); box-shadow: 0 0 0 0.2rem rgba(11, 31, 58, 0.25); }
+        .error-msg { color: #d9534f; font-size: 14px; text-align: center; margin-bottom: 15px; }
     </style>
 </head>
-
 <body>
+    <nav class="navbar">
+        <div class="brand-group">
+            <span class="cf-logo">CF</span>
+            <span class="brand-name">CampusFix</span>
+        </div>
+    </nav>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <span class="brand-highlight">Campus</span>Fix
-        </a>
-        <span class="navbar-text">
-            Smart Campus Maintenance
-        </span>
+    <div class="login-container">
+        <div class="login-card">
+            <h2>Admin Login</h2>
+            
+            <form action="login_process.php" method="POST">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" class="form-control" placeholder="admin@campusfix.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-login">Sign In</button>
+            </form>
+            
+            <div class="text-center mt-4">
+                <small class="text-muted">For authorized personnel only</small>
+            </div>
+        </div>
     </div>
-</nav>
-
-<!-- Login Form -->
-<div class="container d-flex align-items-center flex-grow-1">
-    <div class="login-container w-100">
-
-        <h4 class="text-center mb-4">User Login</h4>
-
-        <form action="login_process.php" method="POST">
-
-            <!-- Email -->
-            <div class="mb-3">
-                <label class="form-label">Email Address</label>
-                <input 
-                    type="email" 
-                    name="email"
-                    class="form-control"
-                    placeholder="name@campusfix.com"
-                    required>
-            </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input 
-                    type="password" 
-                    name="password"
-                    class="form-control"
-                    placeholder="Enter your password"
-                    required>
-            </div>
-
-            <!-- Login Button -->
-            <button type="submit" class="btn btn-primary w-100">
-                Login
-            </button>
-
-            <!-- Forgot Password -->
-            <div class="text-center mt-3">
-                <a href="#" class="text-decoration-none">
-                    Forgot Password?
-                </a>
-            </div>
-
-        </form>
-    </div>
-</div>
-
-<!-- Footer -->
-<footer class="text-center mb-3">
-    © 2026 CampusFix · www.campusfix.com
-</footer>
-
 </body>
 </html>

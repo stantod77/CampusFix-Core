@@ -1,42 +1,26 @@
 <?php
-session_start(); // 1. Start the session immediately
+session_start();
+$servername = "localhost";
+$username = "www-data";
+$password = "";
+$dbname = "campusfix_db";
 
-require 'db_connect.php'; // 2. Connect to DB
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // 3. Sanitize input (Security)
-    $email = $conn->real_escape_string($_POST['email']);
-    $password_input = $_POST['password'];
+$email = $_POST['email'];
+$pass = $_POST['password']; // In production, use password_verify()
 
-    // 4. Find the user
-    $sql = "SELECT user_id, full_name, role, password_hash FROM users WHERE email = '$email'";
-    $result = $conn->query($sql);
+$sql = "SELECT user_id, full_name FROM users WHERE email = ? AND password_hash = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ss", $email, $pass);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    if ($result->num_rows == 1) {
-        $row = $result->fetch_assoc();
-        
-        // 5. Verify Password
-        // Note: We check TWO things here:
-        // A) Is it a real encrypted hash? (Future secure passwords)
-        // B) Is it the simple text from our Seed Data? (So your test data works)
-        if (password_verify($password_input, $row['password_hash']) || $password_input === $row['password_hash']) {
-            
-            // Success! Create the ID Card (Session Variables)
-            $_SESSION['user_id'] = $row['user_id'];
-            $_SESSION['user_name'] = $row['full_name'];
-            $_SESSION['role'] = $row['role'];
-
-            // Redirect to Dashboard
-            header("Location: dashboard.php");
-            exit();
-            
-        } else {
-            echo "<script>alert('Incorrect Password!'); window.history.back();</script>";
-        }
-    } else {
-        echo "<script>alert('User not found!'); window.history.back();</script>";
-    }
+if ($user = $result->fetch_assoc()) {
+    $_SESSION['user_id'] = $user['user_id'];
+    $_SESSION['full_name'] = $user['full_name'];
+    header("Location: dashboard.php");
+} else {
+    echo "Invalid login. <a href='login.html'>Try again</a>";
 }
-$conn->close();
 ?>

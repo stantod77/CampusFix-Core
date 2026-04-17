@@ -1,51 +1,22 @@
 <?php
-// 1. Database Credentials
-$servername = "localhost";
-$username = "root";        // The new user we just made
-$password = "dbpass2026";   // The specific password we just set
-$dbname = "campusfix_db";
+require_once 'includes/db_connect.php';
 
-// 2. Create Connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// 3. Check Connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// 4. Check if the Form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    // Get data from the form (these match the 'name' attributes in HTML)
-    $full_name = $_POST['full_name'];
-    $email = $_POST['email'];
-    $building_name = $_POST['building']; // This sends the text like "Science Lab"
-    $room = $_POST['room'];
-    $category = $_POST['category'];
-    $severity = $_POST['severity'];
-    $description = $_POST['description'];
+    $b_id = intval($_POST['building_id']);
+    $c_id = intval($_POST['category_id']);
+    $s_lvl = intval($_POST['severity_level']);
     
-    // Default Status
-    $status = 'Open';
+    // Combine contact info into the description
+    $full_desc = "From: " . $_POST['student_name'] . " (" . $_POST['student_email'] . ") - " . $_POST['description'];
+    $desc = mysqli_real_escape_string($conn, $full_desc);
 
-    // 5. The SQL Command (The Order Ticket)
-    // Note: We need to lookup the Building ID first, but for now let's just insert the text
-    // Assuming your 'tickets' table has a 'building_id', we might need a quick lookup here.
-    // For this test, let's just ensure we are inserting into valid columns.
-    
-    $sql = "INSERT INTO tickets (user_id, title, description, status, severity_level, created_at) 
-            VALUES (1, '$category Issue in $building_name', '$description', '$status', '$severity', NOW())";
-            
-    // Note: I put 'user_id = 1' as a placeholder since we don't have a login system yet.
+    $sql = "INSERT INTO Tickets (building_id, category_id, severity_level, description, status) 
+            VALUES ($b_id, $c_id, $s_lvl, '$desc', 'Open')";
 
-   if ($conn->query($sql) === TRUE) {
-        // Redirect back to the main page with a success signal
-        header("Location: success.html");
-        exit(); // Always exit after a header redirect!
+    if ($conn->query($sql) === TRUE) {
+        echo "<script>alert('Thank you! Ticket submitted.'); window.location.href='ticket.html';</script>";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $conn->error;
     }
 }
-
-$conn->close();
 ?>
